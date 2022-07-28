@@ -2,19 +2,19 @@ import { useRouter } from 'next/router';
 import EventContent from '../../components/event-detail/event-content';
 import EventSummary from '../../components/event-detail/event-summary';
 import EventLogistics from '../../components/event-detail/event-logistics';
-import clientPromise, { getDataById } from '../../util/mongodb';
+import clientPromise, { getAllData, getDataById } from '../../util/mongodb';
 // import { getEventById } from '../../dummydata';
 
 function SomeId(props) {
-  const router = useRouter();
-  const id = router.query.id;
+  // const router = useRouter();
+  // const id = router.query.id;
 
   const { data } = props;
+
   const event = data;
 
-  if (!id) return null;
-  if (event === undefined) {
-    return <p>No event found!</p>;
+  if (!event) {
+    return <p>Loading...</p>;
   }
 
   return (
@@ -33,13 +33,13 @@ function SomeId(props) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const { params } = context;
-
+export async function getStaticProps(context) {
   try {
+    const { params } = context;
     const client = await clientPromise;
 
     const data = await getDataById(client, params.id);
+    if (!data) return { notFound: true };
 
     return {
       props: { data, isConnected: true },
@@ -49,6 +49,22 @@ export async function getServerSideProps(context) {
     return {
       props: { isConnected: false },
     };
+  }
+}
+
+export async function getStaticPaths() {
+  try {
+    const client = await clientPromise;
+    const data = await getAllData(client);
+    const paths = data.map((item) => {
+      return {
+        params: { id: item.id },
+      };
+    });
+
+    return { paths: paths, fallback: true };
+  } catch (e) {
+    console.error(e);
   }
 }
 
