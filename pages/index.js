@@ -1,6 +1,6 @@
 // import { getFeaturedEvents } from '../dummydata';
 import EventList from '../components/events/event-list';
-import clientPromise, { getFeaturedData } from '../util/mongodb';
+import clientPromise, { getFeaturedData } from '../util/api-mongodb';
 
 function HomePage(props) {
   const { isConnected, data } = props;
