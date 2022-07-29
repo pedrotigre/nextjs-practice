@@ -25,7 +25,7 @@ export async function getStaticProps(context) {
 
     return {
       props: { data, isConnected: true },
-      revalidate: 60,
+      revalidate: 3600,
     };
   } catch (e) {
     console.error(e);

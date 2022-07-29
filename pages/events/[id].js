@@ -2,7 +2,11 @@ import { useRouter } from 'next/router';
 import EventContent from '../../components/event-detail/event-content';
 import EventSummary from '../../components/event-detail/event-summary';
 import EventLogistics from '../../components/event-detail/event-logistics';
-import clientPromise, { getAllData, getDataById } from '../../util/api-mongodb';
+import LoadingIcon from '../../components/icons/loading-svg';
+import clientPromise, {
+  getDataById,
+  getFeaturedData,
+} from '../../util/api-mongodb';
 // import { getEventById } from '../../dummydata';
 
 function SomeId(props) {
@@ -14,7 +18,7 @@ function SomeId(props) {
   const event = data;
 
   if (!event) {
-    return <p>Loading...</p>;
+    return <LoadingIcon />;
   }
 
   return (
@@ -43,6 +47,7 @@ export async function getStaticProps(context) {
 
     return {
       props: { data, isConnected: true },
+      revalidate: 30,
     };
   } catch (e) {
     console.error(e);
@@ -55,7 +60,9 @@ export async function getStaticProps(context) {
 export async function getStaticPaths() {
   try {
     const client = await clientPromise;
-    const data = await getAllData(client);
+    // const data = await getAllData(client);
+    // Instead of pre-rendering all the data, I will pre-render only the featured ones
+    const data = await getFeaturedData(client);
     const paths = data.map((item) => {
       return {
         params: { id: item.id },
