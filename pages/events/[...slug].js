@@ -6,8 +6,7 @@ function Slug() {
 
   return (
     <div>
-      <h1>Slug:</h1>
-      <ul></ul>
+      <h1>Slug: {slug}</h1>
     </div>
   );
 }

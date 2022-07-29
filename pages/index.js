@@ -1,6 +1,6 @@
 // import { getFeaturedEvents } from '../dummydata';
 import EventList from '../components/events/event-list';
-import clientPromise, { getFeaturedData } from '../util/mongodb';
+import clientPromise, { getFeaturedData } from '../util/api-mongodb';
 
 function HomePage(props) {
   const { isConnected, data } = props;
@@ -25,7 +25,7 @@ export async function getStaticProps(context) {
 
     return {
       props: { data, isConnected: true },
-      revalidate: 60,
+      revalidate: 3600,
     };
   } catch (e) {
     console.error(e);
